@@ -1,0 +1,65 @@
+﻿<Window x:Class="Matting.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Matting"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="900" Background="#666666">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*"/>
+            <RowDefinition Height="0.95*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" >
+            <Menu>
+                <MenuItem Header="文件">
+                    <MenuItem Header="图像文件" Click="File_Click"/>
+                    <Separator />
+                    <MenuItem Header="截图" Click="File_Click"/>
+                    <MenuItem Header="剪切板" Click="File_Click"/>
+                    <Separator />
+                    <MenuItem Header="视频" Click="File_Click"/>
+                </MenuItem>
+            </Menu>
+
+            <Menu>
+                <MenuItem Header="背景">
+                    <MenuItem Header="背景颜色" Click="BackGround_Click" />
+                    <Separator />
+                    <MenuItem Header="背景图像" Click="BackGround_Click"/>
+                </MenuItem>
+            </Menu>
+
+            <Menu>
+                <MenuItem Header="保存">
+                    <MenuItem Header="保存整体" Click="Save_Click"/>
+                    <Separator />
+                    <MenuItem Header="保存前景" Click="Save_Click"/>
+                </MenuItem>
+            </Menu>
+
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" x:Name="imageST" Grid.Row="1">
+            <Border Margin="10,0,0,0" BorderThickness="2" Width="400" Height="400" HorizontalAlignment="Center" BorderBrush="DarkGray"  >
+                <Image x:Name="mImage"  Stretch="Uniform" />
+            </Border>
+            <Border Margin="70,0,0,0" BorderThickness="2" Width="400" Height="400" HorizontalAlignment="Center" BorderBrush="DarkGray"  >
+                <Grid>
+                    <Image x:Name="mBg" Stretch="Uniform" />
+                    <Image x:Name="mMatting" Stretch="Uniform" />
+                </Grid>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" x:Name="videoST" Grid.Row="1">
+            <Border Margin="10,0,0,0" BorderThickness="2" Width="400" Height="400" HorizontalAlignment="Center" BorderBrush="DarkGray"  >
+                <MediaElement x:Name="mOrgVideo" LoadedBehavior="Manual"  />
+            </Border>
+            <Border Margin="70,0,0,0" BorderThickness="2" Width="400" Height="400" HorizontalAlignment="Center" BorderBrush="DarkGray"  >
+                <MediaElement x:Name="mMattingVideo" LoadedBehavior="Manual" />
+            </Border>
+        </StackPanel>
+
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matting", "Matting.csproj", "{83E3A5B3-B42F-4C02-B307-D06F1BAA3D7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83E3A5B3-B42F-4C02-B307-D06F1BAA3D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83E3A5B3-B42F-4C02-B307-D06F1BAA3D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83E3A5B3-B42F-4C02-B307-D06F1BAA3D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83E3A5B3-B42F-4C02-B307-D06F1BAA3D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BD782FF1-FB57-4D0B-B87A-9B255B9DA8D6}
+	EndGlobalSection
+EndGlobal
