@@ -183,6 +183,7 @@ namespace Matting
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.MenuItem menu = sender as System.Windows.Controls.MenuItem;
+            String exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             if (menu.Header.ToString() == "保存整体")//背景+前景
             {
                 // 创建融合图像的目标Mat对象
@@ -213,8 +214,8 @@ namespace Matting
                 {
                     new OpenCvSharp.ImageEncodingParam(OpenCvSharp.ImwriteFlags.PngCompression, 9) // 设置PNG压缩级别
                 };
-                // 保存融合后的图像
-                OpenCvSharp.Cv2.ImWrite("D:\\path_to_save_image.png", blendedImage, parameters);
+              // 保存融合后的图像
+                OpenCvSharp.Cv2.ImWrite(exePath + "\\full.png", blendedImage, parameters);
             }
             else if (menu.Header.ToString() == "保存前景")//前景only
             {
@@ -223,8 +224,8 @@ namespace Matting
                 {
                     new OpenCvSharp.ImageEncodingParam(OpenCvSharp.ImwriteFlags.PngCompression, 9) // 设置PNG压缩级别
                 };
-                // 保存融合后的图像
-                OpenCvSharp.Cv2.ImWrite("D:\\path_to_save_image.png", this.mForeGround, parameters);
+             // 保存融合后的图像
+                OpenCvSharp.Cv2.ImWrite(exePath + "\\foreground.png", this.mForeGround, parameters);
             }
 
         }
