@@ -5,7 +5,7 @@
 
 关注微信公众号：**人工智能大讲堂**    
 <img width="180" src="https://user-images.githubusercontent.com/18625471/228743333-77abe467-2385-476d-86a2-e232c6482291.jpg">  
-后台回复【matting】或者安装包以及模型文件  
+后台回复【matting】获取安装包以及模型文件  
 
 ## 支持多种文件类型</h2>  
  文件->图像文件 加载本地图像文件  
