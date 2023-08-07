@@ -18,6 +18,7 @@
 
   ## 支持多种保存选择</h2>  
   保存->保存整体  前景+背景  
-  <img width="500" src="https://user-images.githubusercontent.com/18625471/258719054-bf497476-c953-420f-a0a3-228545c7a60d.png"> 
+  <img width="300" src="https://user-images.githubusercontent.com/18625471/258719054-bf497476-c953-420f-a0a3-228545c7a60d.png">   
+  
   保存->保存前景  只保存前景  
-  <img width="500" src="https://user-images.githubusercontent.com/18625471/258719046-f863bb9e-7334-45cd-ab7c-2b33aa044810.png"> 
+  <img width="300" src="https://user-images.githubusercontent.com/18625471/258719046-f863bb9e-7334-45cd-ab7c-2b33aa044810.png"> 
