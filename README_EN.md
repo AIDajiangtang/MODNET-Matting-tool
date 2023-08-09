@@ -38,13 +38,13 @@ File -> Video For efficiency, the current Fps is 2, that is, two frames per seco
 
  ## source code compilation</h2>  
 1. Download the source code to the local
-2.Visual Studio opens the .sln project solution<\br>
-3. Install the Nuget package<\br>
-   3.1 In Visual Studio, right-click on the project and select "Manage NuGet Packages".<\br>
-   3.2 In the "NuGet Package Manager" window, select the "Browse" tab.<\br>
-   3.3 Search for Microsoft.ML.OnnxRuntime, select version 1.15.1, and click Install<\br>
-   3.4 Search for OpenCvSharp4, select version 4.8.0, and click Install<\br>
-   3.5 Search for OpenCvSharp4.runtime.win, select version 4.8.0, and click Install<\br>
-   3.6 Find ScreenCapture.dll under Debug or Release and add it to the reference<\br>
-  5. Put MODNET.onnx in the exe path<\br>
-  6. Run the program<\br>
+2.Visual Studio opens the .sln project solution<br />  
+3. Install the Nuget package<br />  
+   3.1 In Visual Studio, right-click on the project and select "Manage NuGet Packages".<br />  
+   3.2 In the "NuGet Package Manager" window, select the "Browse" tab.<br />  
+   3.3 Search for Microsoft.ML.OnnxRuntime, select version 1.15.1, and click Install<br />  
+   3.4 Search for OpenCvSharp4, select version 4.8.0, and click Install<br />  
+   3.5 Search for OpenCvSharp4.runtime.win, select version 4.8.0, and click Install<br />  
+   3.6 Find ScreenCapture.dll under Debug or Release and add it to the reference<br />  
+  5. Put MODNET.onnx in the exe path<br />  
+  6. Run the program<br />  
