@@ -1,3 +1,5 @@
+简体中文 | [English](README_EN.md)
+
 # MODNET-Matting-tool
 基于深度学习的抠图工具C#推理工具  
 [[`Paper`](https://arxiv.org/pdf/2011.11961.pdf )]  
