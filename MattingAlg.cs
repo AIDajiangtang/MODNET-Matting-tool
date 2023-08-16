@@ -35,7 +35,7 @@ namespace Matting
                 this.mSession.Dispose();
 
             string exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            string model_path = exePath + @"\MODNET.onnx";
+            string model_path = Path.Combine(exePath, "Model", "MODNET.onnx");
             if (!File.Exists(model_path))
             {
                 MessageBox.Show(model_path + " not exist!");
