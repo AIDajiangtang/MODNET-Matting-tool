@@ -45,3 +45,5 @@
   3.6找到Debug或者Release下的ScreenCapture.dll,添加到引用中  
  4.将MODNET.onnx放到exe路径下  
  5.运行程序
+
+注意：有时前景图像中可能带有一些碎片，可以使用OpenCV最大连通域算法去掉小的碎片。
