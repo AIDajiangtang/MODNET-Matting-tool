@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -16,6 +16,7 @@ namespace Matting
     public partial class MainWindow : Window
     {
         System.Drawing.Color mBgColor = System.Drawing.Color.Transparent;//背景颜色
+        string mBgfile = string.Empty;//背景文件
         OpenCvSharp.Size mOrgSize;//原始图像大小
         MattingAlg mMattingAlg;//抠图AI算法
 
@@ -52,6 +53,8 @@ namespace Matting
                     if (this.mForeGround != null) this.mForeGround.Dispose();
                     this.mForeGround = this.Matting(image);
                     this.ShowMatting(this.mForeGround);//显示抠图
+
+                    this.ShowBG();//显示背景
                 });
                 thread.Start();
 
@@ -68,7 +71,16 @@ namespace Matting
                 if (screenCapturer.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     this.ShowOrgImage(this.ConvertToBitmapSource(screenCapturer.Image));//显示图像 
-                    this.Matting(screenCapturer.Image);//抠图
+                    //this.Matting(screenCapturer.Image);//抠图
+                    OpenCvSharp.Mat image = this.Convert2Mat(screenCapturer.Image);
+                    Thread thread = new Thread(() =>
+                    {
+                        if (this.mForeGround != null) this.mForeGround.Dispose();
+                        this.mForeGround = this.Matting(image);
+                        this.ShowMatting(this.mForeGround);//显示抠图
+                        this.ShowBG();//显示背景
+                    });
+                    thread.Start();                 
                 }
                 this.Show();
             }
@@ -79,7 +91,16 @@ namespace Matting
                 this.videoST.Visibility = Visibility.Hidden;
                 System.Drawing.Bitmap bitmap = this.GetClipboardImage();
                 this.ShowOrgImage(this.ConvertToBitmapSource(bitmap));//显示图像 
-                this.Matting(bitmap);//抠图
+                //this.Matting(bitmap);//抠图
+                OpenCvSharp.Mat image = this.Convert2Mat(bitmap);
+                Thread thread = new Thread(() =>
+                {
+                    if (this.mForeGround != null) this.mForeGround.Dispose();
+                    this.mForeGround = this.Matting(image);
+                    this.ShowMatting(this.mForeGround);//显示抠图
+                    this.ShowBG();//显示背景
+                });
+                thread.Start();
             }
             //视频
             else if (menu.Header.ToString() == "视频")
@@ -161,9 +182,10 @@ namespace Matting
                 colorDialog.Color = bgcolor;
                 if (colorDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                 if (this.mBackground != null) this.mBackground.Dispose();
+                this.mBgColor = colorDialog.Color;
+                this.mBgfile = string.Empty;
 
-                this.mBackground = this.GenerateBgMat(colorDialog.Color);//生成背景Mat
-                this.ShowBackground(this.mBackground);//显示背景
+                this.ShowBG();//显示背景
             }
             //背景图像
             else if (menu.Header.ToString() == "背景图像")
@@ -172,10 +194,29 @@ namespace Matting
                 ofd.Filter = "*.*|*.bmp;*.jpg;*.jpeg;*.tiff;*.tiff;*.png"; ;
                 if (ofd.ShowDialog() != true) return;
                 if (this.mBackground != null) this.mBackground.Dispose();
-                this.mBackground = this.GenerateBgMat(ofd.FileName);//生成背景Mat
-                this.ShowBackground(this.mBackground);//显示背景       
+
+                this.mBgfile = ofd.FileName;
+                this.mBgColor = System.Drawing.Color.Transparent;
+
+                this.ShowBG();//显示背景
             }
 
+        }
+        /// <summary>
+        /// 显示背景
+        /// </summary>
+        void ShowBG()
+        {
+            if (this.mBgColor != System.Drawing.Color.Transparent)
+            {
+                this.mBackground = this.GenerateBgMat(this.mBgColor);//生成背景Mat
+                this.ShowBackground(this.mBackground);//显示背景
+            }
+            else if (this.mBgfile != string.Empty)
+            {
+                this.mBackground = this.GenerateBgMat(this.mBgfile);//生成背景Mat
+                this.ShowBackground(this.mBackground);//显示背景     
+            }
         }
         /// <summary>
         /// 保存
@@ -214,7 +255,7 @@ namespace Matting
                 {
                     new OpenCvSharp.ImageEncodingParam(OpenCvSharp.ImwriteFlags.PngCompression, 9) // 设置PNG压缩级别
                 };
-              // 保存融合后的图像
+                // 保存融合后的图像
                 OpenCvSharp.Cv2.ImWrite(exePath + "\\full.png", blendedImage, parameters);
             }
             else if (menu.Header.ToString() == "保存前景")//前景only
@@ -224,7 +265,7 @@ namespace Matting
                 {
                     new OpenCvSharp.ImageEncodingParam(OpenCvSharp.ImwriteFlags.PngCompression, 9) // 设置PNG压缩级别
                 };
-             // 保存融合后的图像
+                // 保存融合后的图像
                 OpenCvSharp.Cv2.ImWrite(exePath + "\\foreground.png", this.mForeGround, parameters);
             }
 
@@ -257,11 +298,33 @@ namespace Matting
             OpenCvSharp.Mat image = OpenCvSharp.Cv2.ImRead(file, OpenCvSharp.ImreadModes.Color);
             OpenCvSharp.Size newSize = this.mOrgSize;
 
-            OpenCvSharp.Mat bgMat = new OpenCvSharp.Mat();
-            // Resize the image
-            OpenCvSharp.Cv2.Resize(image, bgMat, newSize, 0, 0, OpenCvSharp.InterpolationFlags.Linear);
+            int targetWidth = newSize.Width;  // 目标宽度
+            int targetHeight = newSize.Height; // 目标高度
 
-            return bgMat;
+            // 计算缩放因子
+            double scaleX = (double)targetWidth / image.Width;
+            double scaleY = (double)targetHeight / image.Height;
+            double scale = Math.Min(scaleX, scaleY);
+
+            // 缩放图像
+            OpenCvSharp.Mat scaledImage = new OpenCvSharp.Mat();
+            OpenCvSharp.Cv2.Resize(image, scaledImage, new OpenCvSharp.Size(), scale, scale);
+
+            // 计算填充大小
+            int paddingWidth = targetWidth - scaledImage.Width;
+            int paddingHeight = targetHeight - scaledImage.Height;
+
+            // 计算边界偏移量
+            int top = paddingHeight / 2;
+            int bottom = paddingHeight - top;
+            int left = paddingWidth / 2;
+            int right = paddingWidth - left;
+
+            // 进行填充
+            OpenCvSharp.Mat paddedImage = new OpenCvSharp.Mat();
+            OpenCvSharp.Cv2.CopyMakeBorder(scaledImage, paddedImage, top, bottom, left, right, OpenCvSharp.BorderTypes.Constant, new OpenCvSharp.Scalar(255, 255, 255));
+
+            return paddedImage;
         }
         /// <summary>
         /// 显示原始视频
@@ -329,6 +392,35 @@ namespace Matting
 
             }));
 
+        }
+        /// <summary>
+        ///将System.Drawing.Image转换为OpenCV Mat
+        /// </summary>
+        OpenCvSharp.Mat Convert2Mat(System.Drawing.Image img)
+        {
+            // 将图像转换为Bitmap
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(img);
+            // 获取图像的宽度和高度
+            int width = bitmap.Width;
+            int height = bitmap.Height;
+
+            OpenCvSharp.Mat image = new OpenCvSharp.Mat(new OpenCvSharp.Size(width, height), OpenCvSharp.MatType.CV_8UC3);
+            // 遍历图像的像素
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    // 获取像素的颜色
+                    System.Drawing.Color color = bitmap.GetPixel(x, y);
+                    image.At<OpenCvSharp.Vec3b>(y, x)[0] = color.B;
+                    image.At<OpenCvSharp.Vec3b>(y, x)[1] = color.G;
+                    image.At<OpenCvSharp.Vec3b>(y, x)[2] = color.R;
+                }
+            }
+            // 释放资源
+            bitmap.Dispose();
+
+            return image;
         }
         /// <summary>
         /// 抠图
@@ -448,7 +540,6 @@ namespace Matting
 
             return forground;
 
-            return this.GenerateForeGround(image, alpharesize);
         }
         /// <summary>
         /// 生成前景图像
@@ -464,13 +555,14 @@ namespace Matting
             {
                 for (int x = 0; x < orgImg.Cols; x++)
                 {
-                    int ind = y * orgImg.Cols + x;
                     forground.At<OpenCvSharp.Vec4b>(y, x)[0] = orgImg.At<OpenCvSharp.Vec3b>(y, x)[0];  // Blue
                     forground.At<OpenCvSharp.Vec4b>(y, x)[1] = orgImg.At<OpenCvSharp.Vec3b>(y, x)[1];  // Green
                     forground.At<OpenCvSharp.Vec4b>(y, x)[2] = orgImg.At<OpenCvSharp.Vec3b>(y, x)[2];  // Red
                     forground.At<OpenCvSharp.Vec4b>(y, x)[3] = (byte)(255 * Alpha.At<float>(y, x));  // Alpha
                 }
             }
+            orgImg.Dispose();
+            Alpha.Dispose();
 
             return forground;
         }
